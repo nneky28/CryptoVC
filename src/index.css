@@ -1,0 +1,94 @@
+html, body{
+  scroll-behavior: smooth;
+  padding: 0;
+}
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+ color: white;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.Toastify__toast--error {
+  border-left: 10px solid #EB5757;
+  border-radius: 8px !important;
+  background: #FAE1E2 !important;
+}
+.Toastify__toast--error::after {
+position: absolute;
+color: #333333;
+font-size: 15px;
+font-weight: 700;
+left:265px;
+padding-top: 14px !important;
+}
+.Toastify__toast--error::before {
+position:relative; 
+z-index:100000;
+left:12px;
+top:6px;
+}
+.Toastify__toast--success {
+border-left: 10px solid #519E47 !important;
+border-radius: 8px !important;
+
+}
+.Toastify__toast--success::before {
+position:relative; 
+z-index:100000;
+left:10px;
+top:6px;
+}
+.Toastify__toast--success::after {
+/* left:265px; */
+padding-top: 14px !important;
+}
+.Toastify__toast--warning {
+border: 1px solid #E78326  !important;
+border-radius: 50px !important;
+background: #FADFC5 !important;
+}
+.Toastify__toast--warning::before {
+position:relative; 
+z-index:100000;
+left:12px;
+top:6px;
+}  
+.Toastify__toast--warning::after {
+position: absolute;
+color: #E78326;
+font-size: 14px;
+font-weight: 700;
+left:265px;
+padding-top: 14px !important;
+}
+.Toastify__toast-body {
+margin-left: 2px !important;
+display: flex;
+align-items: center;
+align-self: stretch;
+
+} 
+.Toastify__toast > button>  svg {
+  display: none;
+}
+.custom-toast {
+  width: 150% !important; 
+  margin: 0 -25% !important;
+  padding: 0px !important;
+}
+@media screen and (max-width: 900px) {
+  .custom-toast {
+    width: 100% !important; 
+    margin: 0 !important;
+  }
+}
