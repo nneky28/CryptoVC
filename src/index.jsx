@@ -15,17 +15,6 @@ root.render(
   <React.StrictMode>
       <QueryClientProvider client={queryClient}>
           <App/>
-          <ToastContainer
-            progressClassName="toastProgress"
-            bodyClassName="toastBody"
-            transition={Zoom}
-            icon={false}
-            autoClose={3000}
-            hideProgressBar={true}
-            position="top-center"
-            toastClassName="custom-toast"
-          />
-
       </QueryClientProvider>
   </React.StrictMode>
 );

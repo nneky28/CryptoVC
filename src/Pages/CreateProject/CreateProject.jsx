@@ -9,7 +9,6 @@ import {
   FormLabel,
   Textarea,
 } from "@chakra-ui/react";
-// import { ConnectButton } from "@rainbow-me/rainbowkit";
 import React, { useRef, useState } from "react";
 import "./CreateProject.css";
 import NavBar from "../../Layouts/NavBar";
@@ -17,6 +16,7 @@ import Footer from "../../Layouts/Footer";
 // import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { token } from "../../Components/Contract";
 import { ImFilePicture } from "react-icons/im";
+import { toast, ToastContainer,Zoom } from "react-toastify";
 
 export function CreateProject({ name, role, desc, img }) {
   const [_title, setTitle] = useState("");
@@ -24,7 +24,7 @@ export function CreateProject({ name, role, desc, img }) {
   const [_target, setTarget] = useState("");
   const [_deadline, setDeadline] = useState("");
   const profilePictureInputRef = useRef(null);
-  let [value, setValue] = React.useState("");
+  const [value, setValue] = React.useState("");
   const [selectedFile, setSelectedFile] = useState(null);
 
   const handleFileChange = (e) => {
@@ -66,6 +66,10 @@ export function CreateProject({ name, role, desc, img }) {
   };
 
   const handleChange = (e) => {
+try {
+  if(!_title,!_description,!_target,!_deadline){
+   return toast.error('All Fields are Required')
+  }else{
     e.preventDefault();
     write?.();
     setTitle("");
@@ -73,6 +77,11 @@ export function CreateProject({ name, role, desc, img }) {
     setTarget("");
     setDeadline("");
     window.location.href = "/";
+  }
+  
+} catch (error) {
+  
+}
   };
 
   return (
@@ -100,7 +109,7 @@ export function CreateProject({ name, role, desc, img }) {
         zIndex={2}
         display={"flex"}
         flexDirection={"column"}
-        mt={"10%"}
+        mt={"8%"}
         w={"100%"}
         maxW={"600px"}
         mx={"auto"}
@@ -280,6 +289,16 @@ export function CreateProject({ name, role, desc, img }) {
         </Center>
       </Box>
       <Footer />
+      <ToastContainer
+        progressClassName="toastProgress"
+        bodyClassName="toastBody"
+        icon={false}
+        autoClose={5000}
+        transition={Zoom}
+        hideProgressBar={true}
+        position="top-center"
+        toastClassName="custom-toast"
+      />
     </Box>
   );
 }

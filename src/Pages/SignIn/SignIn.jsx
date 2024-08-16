@@ -115,7 +115,7 @@ const SignIn = () => {
         icon={false}
         autoClose={5000}
         hideProgressBar={true}
-        position="bottom-center"
+        position="top-center"
         toastClassName="custom-toast"
       />
    

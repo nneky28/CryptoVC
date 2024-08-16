@@ -22,25 +22,23 @@ const Form1 = ({ nextStep ,handleChange,values}) => {
     const { fullName, email, password, country, phone } = values;
 
     if (!fullName) {
-      toast.error("Name field is required!", { position: "top-center" });
+      toast.error("Name field is required!",);
     } else if (!email) {
-      toast.error("Email field is required", { position: "top-center" });
+      toast.error("Email field is required",);
     } else if (!email.includes("@")) {
       toast.error("Please enter a valid email address", {
-        position: "top-center",
       });
     } else if (!password) {
-      toast.error("Password field is required", { position: "top-center" });
+      toast.error("Password field is required",);
     } else if (password.length < 5) {
       toast.error("Password length must be greater than five", {
-        position: "top-center",
       });
     } else if (!country) {
-      toast.error("Country field is required", { position: "top-center" });
+      toast.error("Country field is required",);
     } else if (!phone) {
-      toast.error("Phone field is required", { position: "top-center" });
+      toast.error("Phone field is required",);
     } else {
-      continueFunc(e); // Only call continueFunc if all validations pass
+      continueFunc(e);
     }
   };
 
@@ -63,7 +61,7 @@ const Form1 = ({ nextStep ,handleChange,values}) => {
         zIndex="1"
       />
       <NavBar />
-      <Box mt={'15%'} position={'relative'} zIndex={2}>
+      <Box mt={'10%'} position={'relative'} zIndex={2}>
         <Heading textAlign={'center'} color={'white'} fontSize={'28px'}>CREATE YOUR ACCOUNT</Heading>
         <Text
           color={'white'}

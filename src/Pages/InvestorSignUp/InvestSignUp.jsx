@@ -1,8 +1,7 @@
-import React, { useState, useContext } from "react";
-import { Text, Image, HStack, Box, Heading, Input,Button } from "@chakra-ui/react";
-import { ToastContainer, toast } from "react-toastify";
+import React, { useState } from "react";
+import { Text, HStack, Box, Heading, Input,Button } from "@chakra-ui/react";
+import {toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { UserContext } from "../../Routes/UserContext";
 import NavBar from "../../Layouts/NavBar";
 
 
