@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Text, Image, HStack, Input, Button, Box, Heading, Progress } from "@chakra-ui/react";
+import React from "react";
+import { Text, Input, Button, Box, Heading, Progress } from "@chakra-ui/react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Link } from "react-router-dom";
@@ -185,7 +185,7 @@ const Form1 = ({ nextStep ,handleChange,values}) => {
         icon={false}
         autoClose={5000}
         hideProgressBar={true}
-        position="bottom-center"
+        position="top-center"
         toastClassName="custom-toast"
       />
       </Box>

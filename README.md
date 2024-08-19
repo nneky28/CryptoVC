@@ -72,3 +72,10 @@ Data Protection: Implement measures to protect user data and transaction informa
 Scalability: Ensure the platform can handle a growing number of users and transactions.
 Performance: Optimize for fast transaction processing and minimal downtime.
 Usability: Design an intuitive user interface for both startups and investors.
+
+
+TOOLS
+React Vite
+Metamask
+ethers.js
+

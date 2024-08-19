@@ -47,6 +47,7 @@ export function CreateProject() {
   };  
   
   const { contract, provider,switchToSepoliaOptimism } = useContext(WalletContext);
+
   const SEPOLIA_OPTIMISM_CHAIN_ID = '0xaa37dc';
   
   const handleChange = async (e) => {
@@ -74,20 +75,23 @@ export function CreateProject() {
       const network = await provider.getNetwork();
       const currentChainId = network.chainId;
       const currentChainIdHex = `0x${currentChainId.toString(16)}`.toLowerCase();
-
+console.log('Network',currentChainId)
     if (currentChainIdHex !== SEPOLIA_OPTIMISM_CHAIN_ID) {
       return toast.error('Please switch to the Sepolia Optimism network.');
     }
       setWriteLoading(true);
       const goalInWei = ethers.utils.parseEther(targetNumber.toString());
       const durationInSeconds = Math.floor(deadlineNumber * 24 * 60 * 60);
-  
-      const tx = await contract.launch(goalInWei, durationInSeconds);
+    
+      const tx = await contract.launch(goalInWei, durationInSeconds, {
+        gasLimit: 200000,
+      });
       const receipt = await tx.wait();
-  
+       console.log('Recept', tx,receipt)
       const launchEvent = receipt.events.find(event => event.event === 'Launch');
       if (launchEvent) {
         const [id, creator, goal, startAt, endAt] = launchEvent.args;
+        console.log('Arguments',id,creator,goal,endAt,startAt)
       }
 
       setTitle("");
@@ -95,6 +99,7 @@ export function CreateProject() {
       setTarget("");
       setDeadline("");
     } catch (error) {
+      console.log('error',error)
       toast.error('Failed to launch campaign: ' + error.message);
     } finally {
       setWriteLoading(false);
