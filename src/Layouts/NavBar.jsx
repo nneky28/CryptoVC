@@ -49,11 +49,8 @@ export default function NavBar({ home }) {
 
 
   const handleOptionChange = (e) => {
-    if (signInMode) {
-      return updateUserType("startUp");
-    } else {
-      updateUserType("Investor");
-    }
+    updateUserType(e.target.value)
+
   };
 
   return (
@@ -216,7 +213,7 @@ export default function NavBar({ home }) {
                     color="white"
                     onChange={handleOptionChange}
                   >
-                    <option value="StartUp">StartUp</option>
+                    <option value='startup'>StartUp</option>
                     <option value="Investor">Investor</option>
                   </Select>
                 </Box>
@@ -236,7 +233,7 @@ export default function NavBar({ home }) {
                           Continue
                         </Button>
                       </Link>
-                    ) : userType === "startup" ? (
+                    ) : !signInMode && userType === 'startup' ? (
                       <Link to="/SignUp">
                         <Button
                           color="#ffff"

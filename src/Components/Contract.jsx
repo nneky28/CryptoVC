@@ -1,175 +1,512 @@
 export const token = {
-  address: "0xb8A19D6663ff0E04cC2273653097504595EC42d3",
+  address: "0x218Be26bE1a3d779aaA7A9073e65EedB4B7c8131",
   abi: [
     {
-      anonymous: false,
-      inputs: [
+      "inputs": [
         {
-          indexed: false,
-          internalType: "uint256",
-          name: "_amount",
-          type: "uint256",
+          "internalType": "uint256",
+          "name": "_id",
+          "type": "uint256"
+        }
+      ],
+      "name": "cancel",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_token",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        }
+      ],
+      "name": "Cancel",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_id",
+          "type": "uint256"
+        }
+      ],
+      "name": "claim",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        }
+      ],
+      "name": "Claim",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_goal",
+          "type": "uint256"
         },
         {
-          indexed: false,
-          internalType: "address",
-          name: "_donor",
-          type: "address",
-        },
+          "internalType": "uint32",
+          "name": "_duration",
+          "type": "uint32"
+        }
       ],
-      name: "Donation",
-      type: "event",
+      "name": "launch",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
     },
     {
-      anonymous: false,
-      inputs: [
+      "anonymous": false,
+      "inputs": [
         {
-          indexed: false,
-          internalType: "uint256",
-          name: "_thisTime",
-          type: "uint256",
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
         },
-      ],
-      name: "Now",
-      type: "event",
-    },
-    {
-      anonymous: false,
-      inputs: [
         {
-          indexed: false,
-          internalType: "uint256",
-          name: "_campaign",
-          type: "uint256",
+          "indexed": true,
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
         },
-      ],
-      name: "Withdrawal",
-      type: "event",
-    },
-    {
-      inputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-      name: "campaigns",
-      outputs: [
-        { internalType: "address", name: "owner", type: "address" },
-        { internalType: "string", name: "title", type: "string" },
-        { internalType: "string", name: "description", type: "string" },
-        { internalType: "uint256", name: "targetAmount", type: "uint256" },
-        { internalType: "uint256", name: "deadline", type: "uint256" },
-        { internalType: "uint256", name: "amountRealised", type: "uint256" },
-      ],
-      stateMutability: "view",
-      type: "function",
-    },
-    {
-      inputs: [
-        { internalType: "uint256", name: "", type: "uint256" },
-        { internalType: "address", name: "", type: "address" },
-      ],
-      name: "contributedToCampaign",
-      outputs: [{ internalType: "bool", name: "", type: "bool" }],
-      stateMutability: "view",
-      type: "function",
-    },
-    {
-      inputs: [
-        { internalType: "string", name: "_title", type: "string" },
-        { internalType: "string", name: "_description", type: "string" },
-        { internalType: "uint256", name: "_target", type: "uint256" },
-        { internalType: "uint256", name: "_deadline", type: "uint256" },
-      ],
-      name: "createCampaign",
-      outputs: [{ internalType: "bool", name: "", type: "bool" }],
-      stateMutability: "nonpayable",
-      type: "function",
-    },
-    {
-      inputs: [{ internalType: "uint256", name: "_id", type: "uint256" }],
-      name: "donateToCampaign",
-      outputs: [],
-      stateMutability: "payable",
-      type: "function",
-    },
-    {
-      inputs: [
-        { internalType: "uint256", name: "", type: "uint256" },
-        { internalType: "uint256", name: "", type: "uint256" },
-      ],
-      name: "donors",
-      outputs: [{ internalType: "address", name: "", type: "address" }],
-      stateMutability: "view",
-      type: "function",
-    },
-    {
-      inputs: [{ internalType: "uint256", name: "_id", type: "uint256" }],
-      name: "getAParticularCampaign",
-      outputs: [
         {
-          components: [
-            { internalType: "address", name: "owner", type: "address" },
-            { internalType: "string", name: "title", type: "string" },
-            { internalType: "string", name: "description", type: "string" },
-            { internalType: "uint256", name: "targetAmount", type: "uint256" },
-            { internalType: "uint256", name: "deadline", type: "uint256" },
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "goal",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint32",
+          "name": "startAt",
+          "type": "uint32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint32",
+          "name": "endAt",
+          "type": "uint32"
+        }
+      ],
+      "name": "Launch",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "pledge",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "caller",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "Pledge",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_id",
+          "type": "uint256"
+        }
+      ],
+      "name": "refund",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "caller",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "Refund",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "unpledge",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "caller",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "UnPledge",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "campaigns",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "goal",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint32",
+          "name": "startAt",
+          "type": "uint32"
+        },
+        {
+          "internalType": "uint32",
+          "name": "endAt",
+          "type": "uint32"
+        },
+        {
+          "internalType": "bool",
+          "name": "claimed",
+          "type": "bool"
+        },
+        {
+          "internalType": "uint256",
+          "name": "pledged",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "count",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getAllCampaigns",
+      "outputs": [
+        {
+          "components": [
             {
-              internalType: "uint256",
-              name: "amountRealised",
-              type: "uint256",
+              "internalType": "address",
+              "name": "creator",
+              "type": "address"
             },
-          ],
-          internalType: "struct CrowdFunding.Campaign",
-          name: "",
-          type: "tuple",
-        },
-      ],
-      stateMutability: "view",
-      type: "function",
-    },
-    {
-      inputs: [],
-      name: "getAllCampaigns",
-      outputs: [
-        {
-          components: [
-            { internalType: "address", name: "owner", type: "address" },
-            { internalType: "string", name: "title", type: "string" },
-            { internalType: "string", name: "description", type: "string" },
-            { internalType: "uint256", name: "targetAmount", type: "uint256" },
-            { internalType: "uint256", name: "deadline", type: "uint256" },
             {
-              internalType: "uint256",
-              name: "amountRealised",
-              type: "uint256",
+              "internalType": "uint256",
+              "name": "goal",
+              "type": "uint256"
             },
+            {
+              "internalType": "uint32",
+              "name": "startAt",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "endAt",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bool",
+              "name": "claimed",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "pledged",
+              "type": "uint256"
+            }
           ],
-          internalType: "struct CrowdFunding.Campaign[]",
-          name: "",
-          type: "tuple[]",
-        },
+          "internalType": "struct CryptoCV.Campaign[]",
+          "name": "",
+          "type": "tuple[]"
+        }
       ],
-      stateMutability: "view",
-      type: "function",
+      "stateMutability": "view",
+      "type": "function"
     },
     {
-      inputs: [{ internalType: "uint256", name: "_id", type: "uint256" }],
-      name: "getAllDonors",
-      outputs: [{ internalType: "address[]", name: "", type: "address[]" }],
-      stateMutability: "view",
-      type: "function",
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_id",
+          "type": "uint256"
+        }
+      ],
+      "name": "getCampaign",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "creator",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "goal",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint32",
+              "name": "startAt",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "endAt",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bool",
+              "name": "claimed",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "pledged",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct CryptoCV.Campaign",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
     },
     {
-      inputs: [{ internalType: "uint256", name: "_id", type: "uint256" }],
-      name: "getDonors",
-      outputs: [{ internalType: "address[]", name: "", type: "address[]" }],
-      stateMutability: "view",
-      type: "function",
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_creator",
+          "type": "address"
+        }
+      ],
+      "name": "getCampaignsByCreator",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "creator",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "goal",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint32",
+              "name": "startAt",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "endAt",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bool",
+              "name": "claimed",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "pledged",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct CryptoCV.Campaign[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
     },
     {
-      inputs: [{ internalType: "uint256", name: "_id", type: "uint256" }],
-      name: "withdrawDonationsForACampain",
-      outputs: [],
-      stateMutability: "nonpayable",
-      type: "function",
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "_pledger",
+          "type": "address"
+        }
+      ],
+      "name": "getPledgedAmount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
     },
-    { stateMutability: "payable", type: "receive" },
-  ],
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "pledgedAmount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "token",
+      "outputs": [
+        {
+          "internalType": "contract IERC20",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ]
 };

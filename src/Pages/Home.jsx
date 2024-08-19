@@ -1,19 +1,21 @@
-import React, { useState } from "react";
-import { Box, Center, Text, Heading, Flex } from "@chakra-ui/react";
+import React, { useContext, useState } from "react";
+import { Box, Text, Heading, Flex } from "@chakra-ui/react";
 import NavBar from "../Layouts/NavBar";
 import Footer from "../Layouts/Footer";
 import Header from "../Components/Header";
 import FundedCard from "../Components/FundedCard";
 import Projects from "../Components/Projects";
 import projects from "../Utils/Dummydata";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import WhyUs from "../Components/WhyUs";
+import { UserContext } from "../Routes/UserContext";
 
 export default function Home() {
   const [data] = useState(projects);
   const navigate = useNavigate();
+  const { userType } = useContext(UserContext);
+  const user = JSON.parse(localStorage.getItem("user"));
 
-  
   return (
     <Box
       w="100%"
@@ -74,6 +76,7 @@ export default function Home() {
               >
                 {[
                   {
+                    id:1,
                     title: "Robinhood",
                     value: "003",
                     icon: "robin.svg",
@@ -81,6 +84,7 @@ export default function Home() {
                       "Offers commission-free trading for stocks, cryptocurrencies, and ETFs. Robinhood aims to provide easy access to financial markets",
                   },
                   {
+                    id:2,
                     title: "CryptoHub",
                     value: "003",
                     icon: "cytohub.svg",
@@ -88,6 +92,7 @@ export default function Home() {
                       "CryptoHub offers secure storage solutions, real-time market data, and user-friendly tools to help navigate the cryptocurrency ecosystem.",
                   },
                   {
+                    id:4,
                     title: "GitLab",
                     value: "003",
                     icon: "git.svg",
@@ -103,7 +108,7 @@ export default function Home() {
                     description={project.description}
                     ongoing
                     flexBasis={{ base: "100%", md: "30%" }}
-                    onClick={() => navigate('/details', { state: project })}
+                    onClick={() =>!user && !userType === 'startup' ? null : navigate('/details', { state: project })}
                   />
                 ))}
               </Flex>

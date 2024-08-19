@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Text, HStack, Box, Heading, Input,Button } from "@chakra-ui/react";
-import {toast } from "react-toastify";
+import {toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NavBar from "../../Layouts/NavBar";
+import { useNavigate } from "react-router-dom";
 
 
 const InvestSignUp = () => {
@@ -13,7 +14,7 @@ const InvestSignUp = () => {
   const [country, setCountry] = useState("");
   const [phone, setPhone] = useState("");
   const [data, setData] = useState([]);
-  // const { updateUserType } = useContext(UserContext);
+  const navigate = useNavigate();
 
   const getData = (e) => {
     const { name, value } = e.target;
@@ -39,35 +40,37 @@ const InvestSignUp = () => {
       default:
         break;
     }
-  };
+  }
 
-  const addData = (e) => {
+  const handleSignup = (e) => {
     e.preventDefault();
-
-    if (!fullName) {
-      toast.error("Name field is required!");
-    } else if (!email) {
-      toast.error("Email field is required");
-    } else if (!email.includes("@")) {
-      toast.error("Please enter a valid email address");
-    } else if (!walletAddress) {
-      toast.error("Wallet Address is required");
-    } else if (!password) {
-      toast.error("Password field is required");
-    } else if (password.length < 5) {
-      toast.error("Password length must be greater than five characters");
-    } else if (!country) {
-      toast.error("Country field is required");
-    } else if (!phone) {
-      toast.error("Phone field is required");
-    } else {
-      // const userType = "Investor";
-      // updateUserType(userType);
-      // localStorage.setItem("user", JSON.stringify({ ...data }));
-      // window.location.href = "/";
+  
+    if (!fullName || !email || !password) {
+      toast.error("All fields are required.");
+      return;
     }
+  
+    const investor = JSON.parse(localStorage.getItem("investor")) || [];
+    if (investor.some(user => user.email === email)) {
+      toast.error("User with this email already exists.");
+      return;
+    }
+  
+    const newUser = { 
+      id: Date.now(),
+      fullName, 
+      email, 
+      password,
+      userType: 'Investor'
+    };
+    investor.push(newUser);
+    localStorage.setItem("investor", JSON.stringify(investor));
+  
+    console.log("Stored Investors:", JSON.parse(localStorage.getItem("investor")));
+    navigate("/SignIn", { state: email });
+    toast.success("Signup successful");
   };
-
+  
   return (
     <Box
     w="100%"
@@ -200,7 +203,7 @@ const InvestSignUp = () => {
          p={4}
          bg={"var(--well, linear-gradient(121deg, #027DE4 50.32%, #00D1FC 99.84%))"}
          color={"white"} 
-         onClick={addData} 
+         onClick={handleSignup} 
          type="submit" 
          width="full" 
          mt={4}
@@ -209,7 +212,15 @@ const InvestSignUp = () => {
         </Button>
         </Box>
       </Box>
-
+      <ToastContainer
+        progressClassName="toastProgress"
+        bodyClassName="toastBody"
+        icon={false}
+        autoClose={5000}
+        hideProgressBar={true}
+        position="top-center"
+        toastClassName="custom-toast"
+      />
    
     </Box>
   );
