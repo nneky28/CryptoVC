@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, Image, HStack, Input, Button, Box, Heading } from "@chakra-ui/react";
+import { Text, Image, HStack, Input, Button, Box, Heading, Progress } from "@chakra-ui/react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Link } from "react-router-dom";
@@ -75,14 +75,7 @@ const Form1 = ({ nextStep ,handleChange,values}) => {
         >
           Step 1 of 2
         </Text>
-        <div className="Line--frame">
-          <div className="Line--right">
-            <hr className="hh--Style" />
-          </div>
-          <div className="Line--left">
-            <hr style={{border:'2px solid #FFFFFF'}}/>
-          </div>
-        </div>
+        <Progress value={50} color='#008AFF' size='xs' borderRadius={8}/>
 
         {/* Form Inputs */}
         <Box my={4} color={'#FFFFFF'} >

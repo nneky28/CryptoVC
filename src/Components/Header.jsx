@@ -7,11 +7,16 @@ import {
   Image,
   Circle,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from "../Routes/UserContext";
 
-export default function Header({ title, head }) {
+export default function Header() {
   const navigate = useNavigate();
+  const { userType } = useContext(UserContext);
+  const user = JSON.parse(localStorage.getItem("users"));
+
+
   return (
     <Box
       display={"flex"}
@@ -46,8 +51,7 @@ export default function Header({ title, head }) {
           borderRadius="8px"
           width="184px"
           color={"white"}
-          onClick={()=>navigate("/CreateProject")}
-        >
+          onClick={() => userType === "startup" || user?.[0]?.userType? navigate("/CreateProject") : null}>
           Launch project
         </Button>
         <Button background="transparent" variant="outline" color={"white"}>

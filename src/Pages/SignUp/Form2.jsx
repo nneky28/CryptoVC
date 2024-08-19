@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Text, Box, Heading, Input, Button } from "@chakra-ui/react";
+import { Text, Box, Heading, Input, Button, Progress } from "@chakra-ui/react";
 import NavBar from "../../Layouts/NavBar";
 import { ImFilePicture } from "react-icons/im";
 
@@ -31,7 +31,6 @@ const Form2 = ({ nextStep,  handleSignup,handleChange,va }) => {
 
   const continueFunc = (e) => {
     e.preventDefault();
-
     const {
       profilePicture,
       companyName,
@@ -59,32 +58,7 @@ const Form2 = ({ nextStep,  handleSignup,handleChange,va }) => {
     }
   };
 
-  const addData = (e) => {
-    e.preventDefault();
-
-    const {
-      profilePicture,
-      companyName,
-      biography,
-      projectTitle,
-      socialMedia,
-    } = formState;
-
-    if (!profilePicture) {
-      toast.error("Company field is required!", { position: "top-center" });
-    } else if (!companyName) {
-      toast.error("Biography field is required", { position: "top-center" });
-    } else if (!biography) {
-      toast.error("Biography field is required", { position: "top-center" });
-    } else if (!projectTitle) {
-      toast.error("Project field is required", { position: "top-center" });
-    } else if (!socialMedia) {
-      toast.error("Social field is required", { position: "top-center" });
-    } else {
-      continueFunc(e);
-      window.location.href = "/CreateProject";
-    }
-  };
+  
 
   return (
     <Box
@@ -123,15 +97,8 @@ const Form2 = ({ nextStep,  handleSignup,handleChange,va }) => {
             Step 2 of 2
           </Text>
 
-          <div className="Line--frame">
-            <div className="Line--right">
-              <hr className="hh--Style" />
-            </div>
-            <div className="Line--left">
-              <hr className="hh--Style" />
-            </div>
-          </div>
-          <Text color={"white"} mb={2}>
+          <Progress value={100} color='#008AFF' size='xs' borderRadius={8}/>
+          <Text color={"white"} my={2}>
             Profile Picture
           </Text>
           <Box
@@ -229,18 +196,23 @@ const Form2 = ({ nextStep,  handleSignup,handleChange,va }) => {
           <Button
             p={4}
             my={4}
-            bg={
-              "var(--well, linear-gradient(121deg, #027DE4 50.32%, #00D1FC 99.84%))"
-            }
+            bg={"var(--well, linear-gradient(121deg, #027DE4 50.32%, #00D1FC 99.84%))" }
             color={"white"}
             onClick={handleSignup}
             type="submit"
             width="full"
-            mb={12}
-          >
+            mb={12}>
             Create an account
           </Button>
-          <ToastContainer />
+          <ToastContainer 
+        progressClassName="toastProgress"
+        bodyClassName="toastBody"
+        icon={false}
+        autoClose={5000}
+        hideProgressBar={true}
+        position="bottom-center"
+        toastClassName="custom-toast"
+      />
         </Box>
       </Box>
     </Box>

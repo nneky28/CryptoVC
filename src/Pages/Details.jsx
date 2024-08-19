@@ -25,20 +25,23 @@ import Footer from "../Layouts/Footer";
 import TeamCard from "../Components/TeamCard";
 import CustomCard from "../Components/CustomCard";
 import ImageSlider from "../Components/Slider";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { UserContext } from "../Routes/UserContext";
 import { MdOutlineEmail, MdOutlineLocalPhone } from "react-icons/md";
 import { IoLocationOutline } from "react-icons/io5";
 import DonatorModal from "../Components/DonatorModal";
 import { WalletContext } from "../Utils/WalletContext";
+import projects from "../Utils/Dummydata";
 
 export default function Details() {
-  const { userType , isAuthenticated} = useContext(UserContext);
+  const { userType } = useContext(UserContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const location = useLocation();
-  const project = location.state;
-  const { defaultAccount, connectWalletHandler } = useContext(WalletContext);
-  
+  const project = location.state ?? projects;
+  const { defaultAccount } = useContext(WalletContext);
+  const user = JSON.parse(localStorage.getItem("user"));
+  const investor = JSON.parse(localStorage.getItem("investor"));
+  const navigate = useNavigate();
 
   const persons = [
     {
@@ -80,6 +83,7 @@ export default function Details() {
     },
   ];
 
+
   return (
     <Box
       h="auto"
@@ -116,30 +120,25 @@ export default function Details() {
         {userType === "Investor" ? (
           <Button
             onClick={()=>{
-              console.log('Is Modal triggered?',isOpen)
               onOpen()
             }}
-            bg={isAuthenticated || defaultAccount ? 'gray':"var(--well, linear-gradient(121deg, #027DE4 50.32%, #00D1FC 99.84%))"}
-            disabled={isAuthenticated && defaultAccount}
+            bg={investor|| defaultAccount ? "var(--well, linear-gradient(121deg, #027DE4 50.32%, #00D1FC 99.84%))" :'gray'}
+            disabled={investor&& defaultAccount}
             color={"white"}
             p={"10px 20px"}>
             Donate
           </Button>
         ) : (
-          <Link to={"/withdraw"}>
             <Button 
-             onClick={()=>{
-              console.log('Is Modal triggered?',isOpen)
-              onOpen()
-            }}
-            bg={isAuthenticated || defaultAccount ? 'gray':"var(--well, linear-gradient(121deg, #027DE4 50.32%, #00D1FC 99.84%))"}
-            disabled={isAuthenticated && defaultAccount}
+            onClick={() => navigate("/withdraw", { state: project })}
+            bg={user || defaultAccount ? "var(--well, linear-gradient(121deg, #027DE4 50.32%, #00D1FC 99.84%))":'gray'}
+            disabled={user && defaultAccount}
             color={"white"}
             p={"10px 20px"}
             >
              Withdraw
             </Button>
-          </Link>
+     
         )}
       </Flex>
       <Box
@@ -158,7 +157,8 @@ export default function Details() {
           justifyContent={"center"}
           borderRadius="lg"
           zIndex={2}
-          minHeight={"200px"}
+          w={'100%'}
+          minHeight={"400px"}
         >
           <ImageSlider image={project?.icon} />
         </Box>

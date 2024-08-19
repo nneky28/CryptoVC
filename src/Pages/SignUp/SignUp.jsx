@@ -21,9 +21,6 @@ const SignUp = () => {
     socialMedia: "",
     userType: "startup",
   });
-  console.log("formdata outside",formData)
-
-  const { login } = useContext(UserContext);
   const navigate = useNavigate();
 
   const nextStep = () => {
@@ -36,7 +33,6 @@ const SignUp = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log('name',name)
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
@@ -46,26 +42,33 @@ const SignUp = () => {
 
   const handleSignup = (e) => {
     e.preventDefault();
-    const { fullName, email, password, ...rest } = formData; 
-   console.log("formdata  inside",formData)
+    const { fullName, email, password, ...rest } = formData;
   
     if (!fullName || !email || !password) {
       toast.error("All fields are required.");
       return;
     }
   
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    if (users.some(user => user.email === email)) {
+      toast.error("User with this email already exists.");
+      return;
+    }
+  
     const newUser = { 
+      id: Date.now(),
       fullName, 
       email, 
-      password, 
+      password,
+      userType: 'startup',
       ...rest
     };
-  console.log('new user')
-    localStorage.setItem("user", JSON.stringify(newUser));
-    navigate("/SignIn");
+    users.push(newUser);
+    localStorage.setItem("users", JSON.stringify(users));
+    
+    navigate("/SignIn",{ state: formData?.email });
     toast.success("Signup successful");
   };
-  
 
   const { fullName, email, password, walletAddress, country, phone, profilePicture, companyName, biography, projectTitle, socialMedia } = formData;
   const values = { fullName, email, password, walletAddress, country, phone, profilePicture, companyName, biography, projectTitle, socialMedia };

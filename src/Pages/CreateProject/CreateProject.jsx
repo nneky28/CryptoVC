@@ -8,24 +8,30 @@ import {
   FormControl,
   FormLabel,
   Textarea,
+  useDisclosure,
 } from "@chakra-ui/react";
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import "./CreateProject.css";
 import NavBar from "../../Layouts/NavBar";
 import Footer from "../../Layouts/Footer";
-// import { useContractWrite, usePrepareContractWrite } from "wagmi";
-import { token } from "../../Components/Contract";
 import { ImFilePicture } from "react-icons/im";
 import { toast, ToastContainer,Zoom } from "react-toastify";
+import { ethers } from "ethers";
+import { WalletContext } from "../../Utils/WalletContext";
+import StatusModal from "../../Components/StatusModal";
 
-export function CreateProject({ name, role, desc, img }) {
+export function CreateProject() {
   const [_title, setTitle] = useState("");
   const [_description, setDescription] = useState("");
   const [_target, setTarget] = useState("");
+  const[type,setType]= useState("");
   const [_deadline, setDeadline] = useState("");
-  const profilePictureInputRef = useRef(null);
+  const  profilePictureInputRef = useRef(null);
   const [value, setValue] = React.useState("");
   const [selectedFile, setSelectedFile] = useState(null);
+  const [writeLoading,setWriteLoading]= useState(false);
+  const [_category,setCategory]= useState('');
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
@@ -36,54 +42,67 @@ export function CreateProject({ name, role, desc, img }) {
     let inputValue = e.target.value;
     setValue(inputValue);
   };
-  // const { config } = usePrepareContractWrite({
-  //   address: token.address,
-  //   abi: token.abi,
-  //   functionName: "createCampaign",
-  //   args: [
-  //     _title,
-  //     _description,
-  //     !isNaN(parseInt(_target)) ? parseInt(_target) : 0,
-  //     !isNaN(parseInt(_deadline)) ? parseInt(_deadline) : 0,
-  //   ],
-  //   gasLimit: 50000,
-  // });
-
-  // const {
-  //   data: writeData,
-  //   isLoading: writeLoading,
-  //   isSuccess,
-  //   write,
-  // } = useContractWrite(config);
-
   const getData = (e) => {
     const { value, name } = e.target;
-    // console.log("Input name:", name);
-
-    // this.setState({
-    //   [name]: value,
-    // });
-  };
-
-  const handleChange = (e) => {
-try {
-  if(!_title,!_description,!_target,!_deadline){
-   return toast.error('All Fields are Required')
-  }else{
+  };  
+  
+  const { contract, provider,switchToSepoliaOptimism } = useContext(WalletContext);
+  const SEPOLIA_OPTIMISM_CHAIN_ID = '0xaa37dc';
+  
+  const handleChange = async (e) => {
     e.preventDefault();
-    write?.();
-    setTitle("");
-    setDescription("");
-    setTarget("");
-    setDeadline("");
-    window.location.href = "/";
-  }
   
-} catch (error) {
+    if (!_target || !_deadline) {
+      return toast.error('Target amount and deadline are required');
+    }
   
-}
-  };
+    const targetNumber = parseFloat(_target);
+    if (isNaN(targetNumber) || !isFinite(targetNumber) || targetNumber <= 0) {
+      return toast.error('Target must be a valid positive number');
+    }
+  
+    const deadlineNumber = parseInt(_deadline, 10);
+    if (isNaN(deadlineNumber) || deadlineNumber <= 0) {
+      return toast.error('Deadline must be a valid positive number');
+    }
+  
+    try {
+      await switchToSepoliaOptimism();
+      if (!contract) {
+        return toast.error('Wallet not connected or contract not initialized');
+      }
+      const network = await provider.getNetwork();
+      const currentChainId = network.chainId;
+      const currentChainIdHex = `0x${currentChainId.toString(16)}`.toLowerCase();
 
+    if (currentChainIdHex !== SEPOLIA_OPTIMISM_CHAIN_ID) {
+      return toast.error('Please switch to the Sepolia Optimism network.');
+    }
+      setWriteLoading(true);
+      const goalInWei = ethers.utils.parseEther(targetNumber.toString());
+      const durationInSeconds = Math.floor(deadlineNumber * 24 * 60 * 60);
+  
+      const tx = await contract.launch(goalInWei, durationInSeconds);
+      const receipt = await tx.wait();
+  
+      const launchEvent = receipt.events.find(event => event.event === 'Launch');
+      if (launchEvent) {
+        const [id, creator, goal, startAt, endAt] = launchEvent.args;
+      }
+
+      setTitle("");
+      setDescription("");
+      setTarget("");
+      setDeadline("");
+    } catch (error) {
+      toast.error('Failed to launch campaign: ' + error.message);
+    } finally {
+      setWriteLoading(false);
+      // navigate('/details');
+      onOpen()
+    }
+  };
+  
   return (
     <Box
       w="100%"
@@ -140,8 +159,8 @@ try {
             <Input
               type="default"
               id="_category"
-              // onChange={(e) => setDescription(e.target.value)}
-              // value={_description}
+              onChange={(e) => setCategory(e.target.value)}
+              value={_category}
               placeholder="The category of your project. E.g Blockchain, AI, Robotic, etc"
               bg={"#CFDDE9"}
               color={"black"}
@@ -167,7 +186,6 @@ try {
               Funding goals
             </FormLabel>
             <Input
-              type="default"
               id="_target"
               onChange={(e) => setTarget(e.target.value)}
               value={_target}
@@ -175,6 +193,7 @@ try {
               bg={"#CFDDE9"}
               color={"black"}
               _placeholder={{ color: "black" }}
+               type="number"
             />
 
             <FormLabel fontSize={"16px"} mt={5}>
@@ -198,8 +217,8 @@ try {
             <Input
               type="default"
               id="_target"
-              onChange={(e) => setTarget(e.target.value)}
-              value={_target}
+              onChange={(e) => setType(e.target.value)}
+              value={type}
               placeholder="This platform accepts Ethereum "
               bg={"#CFDDE9"}
               color={"black"}
@@ -209,7 +228,7 @@ try {
               Project timeline
             </FormLabel>
             <Input
-              type="default"
+              type="number"
               id="_deadline"
               onChange={(e) => setDeadline(e.target.value)}
               value={_deadline}
@@ -283,8 +302,7 @@ try {
             onClick={handleChange}
             color={"white"}
           >
-            Create a Project
-            {/* {writeLoading ? "Submiting" : "Create a Project"} */}
+            {writeLoading ? "Submiting....." : "Create a Project"}
           </Button>
         </Center>
       </Box>
@@ -298,6 +316,10 @@ try {
         hideProgressBar={true}
         position="top-center"
         toastClassName="custom-toast"
+      />
+      <StatusModal
+      isOpen={isOpen}
+      onClose={onClose}
       />
     </Box>
   );

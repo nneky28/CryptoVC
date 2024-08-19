@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Box,
   Text,
@@ -17,13 +17,69 @@ import {
   ModalFooter,
   Input,
   Highlight,
+  Spinner,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import { WalletContext } from "../Utils/WalletContext";
+import { ethers } from 'ethers';
+import { token } from "./Contract";
+
 
 const DonatorModal = ({ onClose, isOpen, project }) => {
   const [prompt, setPrompt] = useState(false)
   const [success, setSuccess] = useState(false)
   const navigate = useNavigate();
+  const[amt,setAmt] = useState('')
+  const { defaultAccount } = useContext(WalletContext);
+  const { contractId = token.address, provider, signer, switchToSepoliaOptimism } = useContext(WalletContext);
+  const [loading, setLoading] = useState(false)
+
+
+
+  const handleDonate = async () => {
+    console.log('Campaign ID:', 1);
+    console.log('Amount to Donate:', amt);
+  
+    if (typeof window.ethereum !== 'undefined') {
+      try {
+        if (typeof amt !== 'string' || isNaN(parseFloat(amt)) || parseFloat(amt) <= 0) {
+          console.error('Invalid amount:', amt);
+          return;
+        }
+  
+        setLoading(true);
+        await window.ethereum.request({ method: 'eth_requestAccounts' });
+  
+        await switchToSepoliaOptimism();
+  
+        const ethersProvider = new ethers.providers.Web3Provider(window.ethereum);
+        const ethersSigner = ethersProvider.getSigner();
+        const contract = new ethers.Contract(contractId, token.abi, ethersSigner);
+  
+        const amountInEther = ethers.utils.parseEther(amt);
+        console.log('Parsed Amount in Ether:', amountInEther.toString());
+  
+        const tx = await contract.pledge(1, amountInEther);
+        await tx.wait();
+  
+        console.log(`Successfully donated ${amt} to campaign ${campaignId}`);
+  
+        setLoading(false);
+        setPrompt(false);
+        setSuccess(true);
+      } catch (error) {
+        setLoading(false);
+        setPrompt(false);
+        console.error("Error donating:", error);
+        // Handle the error (e.g., show an error message to the user)
+      }
+    } else {
+      console.error("Please install MetaMask!");
+      // Prompt the user to install MetaMask
+    }
+  };
+  
+
 
   return (
     <Modal onClose={onClose} isOpen={isOpen} isCentered>
@@ -47,7 +103,7 @@ const DonatorModal = ({ onClose, isOpen, project }) => {
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path d="M10 17L5 12L6.41 10.58L10 14.17L17.59 6.58L19 8M12 2C10.6868 2 9.38642 2.25866 8.17317 2.7612C6.95991 3.26375 5.85752 4.00035 4.92893 4.92893C3.05357 6.8043 2 9.34784 2 12C2 14.6522 3.05357 17.1957 4.92893 19.0711C5.85752 19.9997 6.95991 20.7362 8.17317 21.2388C9.38642 21.7413 10.6868 22 12 22C14.6522 22 17.1957 20.9464 19.0711 19.0711C20.9464 17.1957 22 14.6522 22 12C22 10.6868 21.7413 9.38642 21.2388 8.17317C20.7362 6.95991 19.9997 5.85752 19.0711 4.92893C18.1425 4.00035 17.0401 3.26375 15.8268 2.7612C14.6136 2.25866 13.3132 2 12 2Z" fill="#3F8A33"/>
           </svg>
-          <Text fontSize={'20px'}  fontWeight={'bold'}>0.0005 CELO contributed</Text>
+          <Text fontSize={'20px'}  fontWeight={'bold'}>{amt} CELO contributed</Text>
           </Flex>
           <Text fontSize={'16px'} >Changes could be subject to additional
           gate fee</Text>
@@ -169,8 +225,8 @@ const DonatorModal = ({ onClose, isOpen, project }) => {
                 {project?.title}
               </Text>
              <Box>
-             <Flex gap={4}>
-             <Input variant='outline' placeholder='Enter amount you wish to donate'/>
+             <Flex gap={4}> 
+             <Input variant='outline' placeholder='Enter amount you wish to donate' value={amt} type="number" onChange={(e)=>setAmt(e.target.value)}/>
              <Input htmlSize={4} width='auto'placeholder="ETH" />
              </Flex>
              </Box>
@@ -191,13 +247,13 @@ const DonatorModal = ({ onClose, isOpen, project }) => {
                 <Text fontWeight={'bold'} color={'white'} fontSize={'32px'} lineHeight={'42px'}>Total</Text>
                 <Flex justifyContent={'space-between'} my={2}>
                 <Text fontWeight={400} color={'white'} fontSize={'18px'}>Your contribution</Text>
-                  <Text fontWeight={400} color={'white'} fontSize={'18px'}>O.0005 ETH</Text>
+                  <Text fontWeight={400} color={'white'} fontSize={'18px'}>{amt} ETH</Text>
                 </Flex>
                 <Flex justifyContent={'space-between'} whiteSpace={'nowrap'}>
                 <Text fontWeight={400} color={'white'} fontSize={'18px'} whiteSpace={'nowrap'}>Wallet Address</Text>
                   <Text fontWeight={400} color={'#00D1FC'} fontSize={'18px'} whiteSpace={'nowrap'}  textOverflow="ellipsis"
                     overflow="hidden"
-                    width="100px" >0x7d83bfc14d7b4d2930e2ff9d3f45a09dff3e2a17</Text>
+                    width="100px" >{defaultAccount}</Text>
                 </Flex>
               </Box>
               <Box display={'flex'} flexDirection={'column'} alignItems={'center'} my={5}>
@@ -235,11 +291,15 @@ const DonatorModal = ({ onClose, isOpen, project }) => {
              border={'none'}
              color={'white'}
              bg={'var(--well, linear-gradient(121deg, #027DE4 50.32%, #00D1FC 99.84%))'}
-             onClick={() => {
-              setPrompt(false)
-              setSuccess(true)
-             }}
-            >Confirm</Button>
+             onClick={handleDonate}>
+              {loading ? <Spinner
+              thickness='4px'
+              speed='0.65s'
+              emptyColor='gray.200'
+              color='blue.500'
+              size='md'
+            />:'Confirm'}
+              </Button>
           </ButtonGroup>
           </ModalFooter>
           )

@@ -1,15 +1,18 @@
 import React, { useContext, useState } from "react";
 import { Text, Box, Input, Button, Heading } from "@chakra-ui/react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-
 import NavBar from "../../Layouts/NavBar";
 import { UserContext } from "../../Routes/UserContext";
 
 const SignIn = () => {
-  const [formData, setFormData] = useState({ email: "", password: "" });
-  const { login } = useContext(UserContext);
+  const location = useLocation();
+  const email = location.state;
+  const [formData, setFormData] = useState({ email: email ?? "", password: "" });
+  const { login,userType } = useContext(UserContext);
   const navigate = useNavigate();
+
+console.log('userType',userType)
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,11 +27,20 @@ const SignIn = () => {
       toast.error("Email and password are required.");
       return;
     }
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (storedUser && storedUser.email === email && storedUser.password === password) {
-      login(storedUser);
+    const usersKey = userType === "Investor" ? "investor" : "users";
+    const storedUsers = JSON.parse(localStorage.getItem(usersKey)) || [];
+  console.log('usersKey and storedUsers',usersKey,storedUsers)
+    const user = storedUsers.find(u => u.email === email && u.password === password);
+console.log('USER',user)
+    
+    if (user) {
+      login(user);
       toast.success("Logged in successfully");
-      navigate('/CreateProject')
+      if (userType === "Investor") {
+        navigate('/details');
+      } else {
+        navigate('/CreateProject');
+      }
     } else {
       toast.error("Invalid credentials");
     }
@@ -66,6 +78,7 @@ const SignIn = () => {
           name="email"
           w={"100%"}
           p={4}
+          value={formData?.email}
           variant={"filled"}
           onChange={handleChange}
           placeholder="&nbsp; e.g robertsella@gmail.com"
@@ -83,6 +96,7 @@ const SignIn = () => {
           type="password"
           variant={"filled"}
           color={'white'}
+          value={formData?.password}
           onChange={handleChange}
           placeholder="&nbsp; ********"
           p={4}
