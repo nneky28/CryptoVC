@@ -1,7 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import { Box, Center, Text, Image, Flex } from "@chakra-ui/react";
-
 
 export default function FundedCard({
   title,
@@ -9,10 +7,11 @@ export default function FundedCard({
   icon,
   funds,
   ongoing,
-  link = false,
+  fundraisingGoal,
+  totalRaised,
+  startDate,
   onClick,
 }) {
- 
   return (
     <Box
       w={["100%", "32%"]}
@@ -23,16 +22,16 @@ export default function FundedCard({
       borderColor={"#F8F8FA"}
       onClick={onClick}
     >
-      <Center>
-        <Center color={"white"}>
-          <Image src={`${icon}`} objectFit={"contain"} />
+    
+        <Center color={"white"} width={'100%'}>
+          <Image src={`${icon}`} objectFit={"contain"}  w={'100%'}/>
         </Center>
-      </Center>
+ 
       <Box p="13px">
         <Text fontSize="lg" pt={"8px"}>
           {title}
         </Text>
-        {ongoing &&
+        {ongoing && (
           <Box
             as="button"
             height="24px"
@@ -57,36 +56,35 @@ export default function FundedCard({
                 "0 0 1px 2px rgba(88, 144, 255, .75), 0 1px 1px rgba(0, 0, 0, .15)",
             }}
             mb={2}
-            // onClick={() => {
-            //   link ? history(link) : onClick();
-            // }}
-            >
-            ongoing
+          >
+            Ongoing
           </Box>
-        }
+        )}
         <Text fontSize="xs" pt={"3px"} color={"#F8F8FA"} paddingTop={3}>
           {description}
         </Text>
-       <Box display={'flex'} alignSelf={'center'} justifyContent={'center'} border={'1px solid #F8F8FA'} my={6}/>
+        <Box display={'flex'} alignSelf={'center'} justifyContent={'center'} border={'1px solid #F8F8FA'} my={6}/>
+        
         <Flex gap="3" direction={["row", "row"]} justify={'space-between'}>
           <Text color="#00D1FC" fontSize={16}>
             Total raised
           </Text>
-          <Text fontSize={16}>$1,231,004</Text>
+          <Text fontSize={16}>${totalRaised?.toLocaleString()}</Text>
         </Flex>
 
         <Flex gap="3" direction={["row", "row"]} paddingTop={3} justify={'space-between'}>
           <Text color="#00D1FC" fontSize={16}>
-            {funds ? "Participants" : "Fundraising goal"}
+            Fundraising goal
           </Text>
-          <Text fontSize={16}>$12,491,432</Text>
+          <Text fontSize={16}>${fundraisingGoal?.toLocaleString()}</Text>
         </Flex>
+        
         {ongoing && (
           <Flex direction={["row", "row"]} paddingTop={3} justify={'space-between'}>
             <Text color="#00D1FC" fontSize={16}>
               Starting Date
             </Text>
-            <Text fontSize={16}>Sep 9</Text>
+            <Text fontSize={16}>{startDate}</Text>
           </Flex>
         )}
       </Box>
@@ -100,3 +98,4 @@ export default function FundedCard({
     </Box>
   );
 }
+

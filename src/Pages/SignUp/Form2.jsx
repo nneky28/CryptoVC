@@ -5,7 +5,7 @@ import { Text, Box, Heading, Input, Button, Progress } from "@chakra-ui/react";
 import NavBar from "../../Layouts/NavBar";
 import { ImFilePicture } from "react-icons/im";
 
-const Form2 = ({ nextStep,  handleSignup,handleChange,va }) => {
+const Form2 = ({ nextStep,  handleSignup,handleChange,values }) => {
   const [formState, setFormState] = useState({
     profilePicture: "",
     companyName: "",
@@ -141,7 +141,7 @@ const Form2 = ({ nextStep,  handleSignup,handleChange,va }) => {
               type="text"
               placeholder="&nbsp; Enter company’s name here and add a description"
               onChange={handleChange}
-              value={formState.companyName}
+              value={values.companyName}
               variant={"filled"}
               p={"20px 16px"}
               color={'white'}
@@ -156,7 +156,7 @@ const Form2 = ({ nextStep,  handleSignup,handleChange,va }) => {
               type="text"
               placeholder="&nbsp; Add a bio"
               onChange={handleChange}
-              value={formState.biography}
+              value={values.biography}
               p={"20px 16px"}
               variant={"filled"}
               color={'white'}
@@ -171,7 +171,7 @@ const Form2 = ({ nextStep,  handleSignup,handleChange,va }) => {
               type="text"
               placeholder=" &nbsp; Enter project title and description"
               onChange={handleChange}
-              value={formState.projectTitle}
+              value={values.projectTitle}
               p={"20px 16px"}
               variant={"filled"}
               color={'white'}
@@ -186,7 +186,7 @@ const Form2 = ({ nextStep,  handleSignup,handleChange,va }) => {
               type="text"
               placeholder=" &nbsp; Add your Discord & telegram links"
               onChange={handleChange}
-              value={formState.socialMedia}
+              value={values.socialMedia}
               p={"20px 16px"}
               variant={"filled"}
               color={'white'}
@@ -205,14 +205,14 @@ const Form2 = ({ nextStep,  handleSignup,handleChange,va }) => {
             Create an account
           </Button>
           <ToastContainer 
-        progressClassName="toastProgress"
-        bodyClassName="toastBody"
-        icon={false}
-        autoClose={5000}
-        hideProgressBar={true}
-        position="bottom-center"
-        toastClassName="custom-toast"
-      />
+          progressClassName="toastProgress"
+          bodyClassName="toastBody"
+          icon={false}
+          autoClose={5000}
+          hideProgressBar={true}
+          position="top-center"
+          toastClassName="custom-toast"
+        />
         </Box>
       </Box>
     </Box>

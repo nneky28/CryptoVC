@@ -43,6 +43,7 @@ export default function Details() {
   const investor = JSON.parse(localStorage.getItem("investor"));
   const navigate = useNavigate();
 
+
   const persons = [
     {
       img: "jessica.png",
@@ -83,7 +84,6 @@ export default function Details() {
     },
   ];
 
-
   return (
     <Box
       h="auto"
@@ -119,26 +119,34 @@ export default function Details() {
 
         {userType === "Investor" ? (
           <Button
-            onClick={()=>{
-              onOpen()
+            onClick={() => {
+              onOpen();
             }}
-            bg={investor|| defaultAccount ? "var(--well, linear-gradient(121deg, #027DE4 50.32%, #00D1FC 99.84%))" :'gray'}
-            disabled={investor&& defaultAccount}
+            bg={
+              investor || defaultAccount
+                ? "var(--well, linear-gradient(121deg, #027DE4 50.32%, #00D1FC 99.84%))"
+                : "gray"
+            }
+            disabled={investor && defaultAccount}
             color={"white"}
-            p={"10px 20px"}>
+            p={"10px 20px"}
+          >
             Donate
           </Button>
         ) : (
-            <Button 
+          <Button
             onClick={() => navigate("/withdraw", { state: project })}
-            bg={user || defaultAccount ? "var(--well, linear-gradient(121deg, #027DE4 50.32%, #00D1FC 99.84%))":'gray'}
+            bg={
+              user || defaultAccount
+                ? "var(--well, linear-gradient(121deg, #027DE4 50.32%, #00D1FC 99.84%))"
+                : "gray"
+            }
             disabled={user && defaultAccount}
             color={"white"}
             p={"10px 20px"}
-            >
-             Withdraw
-            </Button>
-     
+          >
+            Withdraw
+          </Button>
         )}
       </Flex>
       <Box
@@ -157,7 +165,7 @@ export default function Details() {
           justifyContent={"center"}
           borderRadius="lg"
           zIndex={2}
-          w={'100%'}
+          w={"100%"}
           minHeight={"400px"}
         >
           <ImageSlider image={project?.icon} />
@@ -291,15 +299,15 @@ export default function Details() {
                       <Progress
                         mb={"10px"}
                         mt={"10px"}
-                        value={80}
+                        value={project.progressPercentage}
                         size="lg"
                         borderRadius="11px"
                         bg={"#ADCBD1"}
                         color="var(--well, linear-gradient(121deg, #027DE4 50.32%, #00D1FC 99.84%))"
-                        // colorScheme="orange"
                       />
-
-                      <Text>65% fundraising goal met </Text>
+                      <Text>
+                        {project.progressPercentage}% fundraising goal met
+                      </Text>
                     </Box>
                     <Flex justify={"space-between"} mt={"25px"}>
                       <Box>
@@ -307,33 +315,33 @@ export default function Details() {
                           Fundraising goal
                         </Text>
                         <Heading mt={"5px"} fontSize={"26px"}>
-                          $190,204,512
+                          ${project.fundraisingGoal?.toLocaleString()}
                         </Heading>
                       </Box>
                       <Box borderLeft={"1px solid white"} />
-
                       <Box>
                         <Text color={"#ADCBD1"} fontSize={"sm"}>
                           Total raised
                         </Text>
                         <Heading mt={"5px"} fontSize={"26px"}>
-                          $150,204,512
+                          ${project.totalRaised?.toLocaleString()}
                         </Heading>
                       </Box>
                     </Flex>
+
                     <Box borderBottom={"1px solid white"} mt={12} />
 
                     <Flex justify={"space-between"} mt={10}>
                       <Text color={"#00D1FC"} fontSize={"sm"}>
                         Starting date
                       </Text>
-                      <Text> June 9, 2023</Text>
+                      <Text> Aug 19, 2024</Text>
                     </Flex>
                     <Flex justify={"space-between"} mt={2}>
                       <Text color={"#00D1FC"} fontSize={"sm"}>
                         Completion date
                       </Text>
-                      <Text> June 9, 2025</Text>
+                      <Text> Dec 9, 2024</Text>
                     </Flex>
                     <Flex justify={"space-between"} mt={2}>
                       <Text color={"#00D1FC"} fontSize={"sm"}>
@@ -565,11 +573,7 @@ export default function Details() {
                     >
                       Category
                     </Text>
-                    <Box
-                      display={"flex"}
-                      flexDirection={"column"}
-                      gap={"80px"}
-                    >
+                    <Box display={"flex"} flexDirection={"column"} gap={"80px"}>
                       <Text
                         fontSize={"18px"}
                         lineHeight={"24px"}
@@ -607,11 +611,7 @@ export default function Details() {
                     >
                       users
                     </Text>
-                    <Box
-                      display={"flex"}
-                      flexDirection={"column"}
-                      gap={"80px"}
-                    >
+                    <Box display={"flex"} flexDirection={"column"} gap={"80px"}>
                       <Box mt={12}>
                         <AvatarGroup size="md" max={2}>
                           <Avatar
@@ -742,12 +742,8 @@ export default function Details() {
         </Box>
         <Footer />
       </Box>
-      {isOpen &&(
-          <DonatorModal
-          project={project}
-          isOpen={isOpen}
-          onClose={onClose}
-         />
+      {isOpen && (
+        <DonatorModal project={project} isOpen={isOpen} onClose={onClose} />
       )}
     </Box>
   );

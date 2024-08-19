@@ -10,7 +10,7 @@ import {
   Select,
   Spinner,
 } from "@chakra-ui/react";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import NavBar from "../Layouts/NavBar";
 import Footer from "../Layouts/Footer";
 import { useLocation } from "react-router-dom";
@@ -102,50 +102,34 @@ export default function Withdraw() {
     }
   };
 
-
- 
   const { contract, provider,switchToSepoliaOptimism } = useContext(WalletContext);
 
-const contractAddress = '0x218Be26bE1a3d779aaA7A9073e65EedB4B7c8131';
-const contractABI = token?.abi; // paste the ABI array from the token object
-
-
-
-async function checkEndedCampaigns() {
-    const campaigns = await contract.getAllCampaigns();
-    console.log('campaigns', campaigns)
-    
-    const campaignId = campaigns[0][1];
-
-    const accounts = await provider.listAccounts();
-    const currentAccount = accounts[0];
-    const campaignCreator = campaigns[0][0]; // Assuming the creator is the first element
-    console.log('campaignCreator', campaignCreator)
-    if (currentAccount === campaignCreator) {
-      contract.cancel(campaignId)
-        .then((tx) => {
-          console.log('Campaign ended:', tx);
-        })
-        .catch((error) => {
-          console.error('Error ending campaign:', error);
+  useEffect(() => {
+    async function checkEndedCampaigns() {
+      try {
+        const campaigns = await contract.getAllCampaigns();
+        console.log('campaigns', campaigns)
+  
+        const campaignId = 1; 
+        await contract.cancel(campaignId);
+        console.log('Campaign cancelled');
+  
+        const creators = campaigns.map((campaign) => campaign[0]);
+        console.log('Creators:', creators);
+  
+        const endedCampaigns = campaigns.filter(campaign => {
+          const endDate = campaign.endAt * 1000;
+          return endDate < Date.now();
         });
-    } else {
-      console.error('You are not the campaign creator');
+        console.log('Ended campaigns:', endedCampaigns);
+      } catch (error) {
+        console.error('Error checking ended campaigns:', error);
+        toast.error(error.message);
+      }
     }
-
-    // const campaigns = await contract.getAllCampaigns();
-const creators = campaigns.map((campaign) => campaign[0]);
-
-console.log('Creators:', creators);
-  const endedCampaigns = campaigns.filter(campaign => {
-    const endDate = campaign.endAt * 1000;
-    return endDate < Date.now();
-  });
-  console.log('Ended campaigns:', endedCampaigns);
-}
-
-checkEndedCampaigns();
-
+  
+    checkEndedCampaigns();
+  }, []);
 
 
   return (
