@@ -43,7 +43,7 @@ export function CreateProject() {
     setValue(inputValue);
   };
   const getData = (e) => {
-    const { value, name } = e.target;
+    // const { value, name } = e.target;
   };  
   
   const { contract, provider,switchToSepoliaOptimism } = useContext(WalletContext);
@@ -103,7 +103,6 @@ console.log('Network',currentChainId)
       toast.error('Failed to launch campaign: ' + error.message);
     } finally {
       setWriteLoading(false);
-      // navigate('/details');
       onOpen()
     }
   };
