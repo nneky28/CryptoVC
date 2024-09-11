@@ -15,24 +15,27 @@ import "./CreateProject.css";
 import NavBar from "../../Layouts/NavBar";
 import Footer from "../../Layouts/Footer";
 import { ImFilePicture } from "react-icons/im";
-import { toast, ToastContainer,Zoom } from "react-toastify";
+import { toast, ToastContainer, Zoom } from "react-toastify";
 import { ethers } from "ethers";
 import { WalletContext } from "../../Utils/WalletContext";
 import StatusModal from "../../Components/StatusModal";
+import { useCrowdFunding} from "../../hooks/useCrowdFunding";
+
 
 export function CreateProject() {
   const [_title, setTitle] = useState("");
   const [_description, setDescription] = useState("");
   const [_target, setTarget] = useState("");
-  const[type,setType]= useState("");
+  const [type, setType] = useState("");
   const [_deadline, setDeadline] = useState("");
-  const  profilePictureInputRef = useRef(null);
+  const profilePictureInputRef = useRef(null);
   const [value, setValue] = React.useState("");
   const [selectedFile, setSelectedFile] = useState(null);
-  const [writeLoading,setWriteLoading]= useState(false);
-  const [_category,setCategory]= useState('');
+  const [writeLoading, setWriteLoading] = useState(false);
+  const [_category, setCategory] = useState('');
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const { signer } = useContext(WalletContext); // Access signer from context
+  const crowdfundingFunctions = useCrowdFunding(signer);
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
     getData(e);
@@ -44,54 +47,54 @@ export function CreateProject() {
   };
   const getData = (e) => {
     const { value, name } = e.target;
-  };  
-  
-  const { contract, provider,switchToSepoliaOptimism } = useContext(WalletContext);
+  };
 
-  const SEPOLIA_OPTIMISM_CHAIN_ID = '0xaa37dc';
+  const { contract, provider, switchToSepoliaLisk } = useContext(WalletContext);
+
   
+
   const handleChange = async (e) => {
     e.preventDefault();
-  
+
     if (!_target || !_deadline) {
       return toast.error('Target amount and deadline are required');
     }
-  
+
     const targetNumber = parseFloat(_target);
     if (isNaN(targetNumber) || !isFinite(targetNumber) || targetNumber <= 0) {
       return toast.error('Target must be a valid positive number');
     }
-  
+
     const deadlineNumber = parseInt(_deadline, 10);
     if (isNaN(deadlineNumber) || deadlineNumber <= 0) {
       return toast.error('Deadline must be a valid positive number');
     }
-  
+
     try {
-      await switchToSepoliaOptimism();
+      await switchToSepoliaLisk();
       if (!contract) {
         return toast.error('Wallet not connected or contract not initialized');
       }
       const network = await provider.getNetwork();
       const currentChainId = network.chainId;
       const currentChainIdHex = `0x${currentChainId.toString(16)}`.toLowerCase();
-console.log('Network',currentChainId)
-    if (currentChainIdHex !== SEPOLIA_OPTIMISM_CHAIN_ID) {
-      return toast.error('Please switch to the Sepolia Optimism network.');
-    }
+     
+      if (currentChainIdHex !== null) {
+        return toast.error('Please switch to the Sepolia Lisk network.');
+      }
       setWriteLoading(true);
       const goalInWei = ethers.utils.parseEther(targetNumber.toString());
       const durationInSeconds = Math.floor(deadlineNumber * 24 * 60 * 60);
-    
+
       const tx = await contract.launch(goalInWei, durationInSeconds, {
         gasLimit: 200000,
       });
       const receipt = await tx.wait();
-       console.log('Recept', tx,receipt)
+      console.log('Recept', tx, receipt)
       const launchEvent = receipt.events.find(event => event.event === 'Launch');
       if (launchEvent) {
         const [id, creator, goal, startAt, endAt] = launchEvent.args;
-        console.log('Arguments',id,creator,goal,endAt,startAt)
+        console.log('Arguments', id, creator, goal, endAt, startAt)
       }
 
       setTitle("");
@@ -99,7 +102,7 @@ console.log('Network',currentChainId)
       setTarget("");
       setDeadline("");
     } catch (error) {
-      console.log('error',error)
+      console.log('error', error)
       toast.error('Failed to launch campaign: ' + error.message);
     } finally {
       setWriteLoading(false);
@@ -107,7 +110,16 @@ console.log('Network',currentChainId)
       onOpen()
     }
   };
-  
+
+
+  const handleLaunch = async () => {
+    try {
+      const tx = await crowdfundingFunctions.launch(10, 3600); // Example goal and duration
+      console.log('Campaign launched:', tx);
+    } catch (error) {
+      console.error('Error launching campaign:', error);
+    }
+  };
   return (
     <Box
       w="100%"
@@ -198,7 +210,7 @@ console.log('Network',currentChainId)
               bg={"#CFDDE9"}
               color={"black"}
               _placeholder={{ color: "black" }}
-               type="number"
+              type="number"
             />
 
             <FormLabel fontSize={"16px"} mt={5}>
@@ -304,7 +316,7 @@ console.log('Network',currentChainId)
             width="full"
             my={12}
             p={5}
-            onClick={handleChange}
+            onClick={handleLaunch}
             color={"white"}
           >
             {writeLoading ? "Submiting....." : "Create a Project"}
@@ -323,8 +335,8 @@ console.log('Network',currentChainId)
         toastClassName="custom-toast"
       />
       <StatusModal
-      isOpen={isOpen}
-      onClose={onClose}
+        isOpen={isOpen}
+        onClose={onClose}
       />
     </Box>
   );
