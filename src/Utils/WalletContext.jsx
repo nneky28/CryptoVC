@@ -4,10 +4,9 @@ import { token } from '../Components/Contract';
 
 export const WalletContext = createContext();
 
-const SEPOLIA_OPTIMISM_CHAIN_ID = '0xaa37dc';
-// const SEPOLIA_OPTIMISM_CHAIN_ID = '0x' + (11155420).toString(16);
-const SEPOLIA_OPTIMISM_RPC_URL = 'https://sepolia.optimism.io'; 
-const BLOCK_EXPLORER_URL = 'https://sepolia-optimism.etherscan.io/';
+const SEPOLIA_LISK_CHAIN_ID = '0x106a';
+const SEPOLIA_LISK_RPC_URL = 'https://rpc.sepolia-api.lisk.com'; 
+const BLOCK_EXPLORER_URL = 'https://testnet.lisk.observer/';
 
 
 
@@ -52,7 +51,7 @@ export const WalletProvider = ({ children }) => {
 
   const handleChainChanged = async (chainId) => {
     // Reload the page if the chain is not Sepolia Optimism
-    if (chainId !== SEPOLIA_OPTIMISM_CHAIN_ID) {
+    if (chainId !== SEPOLIA_LISK_CHAIN_ID) {
       await switchToSepoliaOptimism();
     } else {
       window.location.reload();
@@ -78,11 +77,11 @@ export const WalletProvider = ({ children }) => {
     try {
       await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: SEPOLIA_OPTIMISM_CHAIN_ID }],
+        params: [{ chainId: SEPOLIA_LISK_CHAIN_ID }],
       });
   
       // After switching, reinitialize provider and contract
-      const provider = new ethers.providers.JsonRpcProvider(SEPOLIA_OPTIMISM_RPC_URL);
+      const provider = new ethers.providers.JsonRpcProvider(SEPOLIA_LISK_RPC_URL);
       setProvider(provider);
   
       const signer = provider.getSigner();
@@ -97,21 +96,21 @@ export const WalletProvider = ({ children }) => {
             method: 'wallet_addEthereumChain',
             params: [
               {
-                chainId: SEPOLIA_OPTIMISM_CHAIN_ID,
+                chainId: SEPOLIA_LISK_CHAIN_ID,
                 chainName: 'Optimism Sepolia',
                 nativeCurrency: {
                   name: 'Sepolia Ether',
                   symbol: 'ETH',
                   decimals: 18,
                 },
-                rpcUrls: [SEPOLIA_OPTIMISM_RPC_URL],
+                rpcUrls: [SEPOLIA_LISK_RPC_URL],
                 blockExplorerUrls: [BLOCK_EXPLORER_URL],
               },
             ],
           });
   
           // Reinitialize provider and contract after adding the network
-          const provider = new ethers.providers.JsonRpcProvider(SEPOLIA_OPTIMISM_RPC_URL);
+          const provider = new ethers.providers.JsonRpcProvider(SEPOLIA_LISK_RPC_URL);
           setProvider(provider);
   
           const signer = provider.getSigner();
