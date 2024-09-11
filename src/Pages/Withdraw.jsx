@@ -10,37 +10,30 @@ import {
   Select,
   Spinner,
 } from "@chakra-ui/react";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext,  useState } from "react";
 import NavBar from "../Layouts/NavBar";
 import Footer from "../Layouts/Footer";
 import { useLocation } from "react-router-dom";
 import projects from "../Utils/Dummydata";
 import { WalletContext } from "../Utils/WalletContext";
-import { token } from "../Components/Contract";
-import { ethers } from "ethers";
 import { toast, ToastContainer } from "react-toastify";
+import { useCrowdFunding } from "../hooks/useCrowdFunding";
 
 export default function Withdraw() {
   const location = useLocation();
   const project = location.state ?? projects;
   const { defaultAccount } = useContext(WalletContext);
-  const [walletAddress, setWalletAddress] = useState(defaultAccount ?? '');
   const [amount, setAmount] = useState("");
   const [withdrawalMethod, setWithdrawalMethod] = useState("");
-  const [status, setStatus] = useState("");
+  const [status] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { signer } = useContext(WalletContext);
+  const crowdfundingFunctions = useCrowdFunding(signer);
 
-  console.log('Id new----', project?.id)
+
 
   const validateForm = () => {
-    let errors = [];
-
-    if (!walletAddress?.trim()) {
-      errors.push("Wallet address is required");
-    } else if (!/^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
-      errors.push("Invalid Ethereum address");
-    }
-
+    let errors = []
     if (!amount?.trim()) {
       errors.push("Amount is required");
     } else if (isNaN(amount) || parseFloat(amount) <= 0) {
@@ -50,7 +43,6 @@ export default function Withdraw() {
     if (!withdrawalMethod) {
       errors.push("Please select a withdrawal method");
     }
-
     if (errors.length > 0) {
       toast.error(errors.join("\n"));
       return false;
@@ -61,36 +53,19 @@ export default function Withdraw() {
 
   const handleWithdraw = async (event) => {
     event.preventDefault();
-  
     if (!validateForm()) {
       return;
     }
-  
-    if (!window.ethereum) {
-      toast.error("Please install MetaMask!");
-      return;
-    }
-  
     setIsLoading(true);
-  
     try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const contract = new ethers.Contract(token.address, token.abi, signer);
-      const amountInWei = ethers.utils.parseEther(amount.toString());
-
-      // Check if user has enough balance
-      const balance = await contract.pledgedAmount(project?.id, walletAddress);
+      const balance = await crowdfundingFunctions.getPledgedAmount(project?.id, defaultAccount );
       console.log('balance',balance)
       if (balance.lt(amountInWei)) {
         toast.error("Insufficient balance for withdrawal");
       }
-  
       // Call the claim function on the contract
-      const tx = await contract.claim(project?.id);
-  
+      const tx = await crowdfundingFunctions.claim(project?.id); 
       toast.info("Transaction sent. Waiting for confirmation...");
-  
       // Wait for the transaction to be mined
       await tx.wait();
       setIsLoading(false);
@@ -101,36 +76,6 @@ export default function Withdraw() {
       toast.error(`Error: ${error.message}`);
     }
   };
-
-  const { contract, provider,switchToSepoliaOptimism } = useContext(WalletContext);
-
-  useEffect(() => {
-    async function checkEndedCampaigns() {
-      try {
-        const campaigns = await contract.getAllCampaigns();
-        console.log('campaigns', campaigns)
-  
-        const campaignId = 1; 
-        await contract.cancel(campaignId);
-        console.log('Campaign cancelled');
-  
-        const creators = campaigns.map((campaign) => campaign[0]);
-        console.log('Creators:', creators);
-  
-        const endedCampaigns = campaigns.filter(campaign => {
-          const endDate = campaign.endAt * 1000;
-          return endDate < Date.now();
-        });
-        console.log('Ended campaigns:', endedCampaigns);
-      } catch (error) {
-        console.error('Error checking ended campaigns:', error);
-        toast.error(error.message);
-      }
-    }
-  
-    checkEndedCampaigns();
-  }, []);
-
 
   return (
     <Box
@@ -178,7 +123,7 @@ export default function Withdraw() {
             placeholder="Enter your Wallet address"
             bg={"#E6DDF8"}
             color={"black"}
-            value={walletAddress}
+            value={defaultAccount}
             onChange={(e) => setWalletAddress(e.target.value)}
             _placeholder={{ color: "black" }}
             h={14}

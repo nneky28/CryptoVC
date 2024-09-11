@@ -1,13 +1,14 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { token } from '../Components/Contract';
+import config from '../config';
+import { useCrowdFunding } from '../hooks/useCrowdFunding';
 
 export const WalletContext = createContext();
 
-const SEPOLIA_OPTIMISM_CHAIN_ID = '0xaa37dc';
-// const SEPOLIA_OPTIMISM_CHAIN_ID = '0x' + (11155420).toString(16);
-const SEPOLIA_OPTIMISM_RPC_URL = 'https://sepolia.optimism.io'; 
-const BLOCK_EXPLORER_URL = 'https://sepolia-optimism.etherscan.io/';
+const SEPOLIA_LISK_CHAIN_ID =config.CHAIN_ID;
+const SEPOLIA_LISK_RPC_URL = config.RPC_URL; 
+const BLOCK_EXPLORER_URL = config.BLOCK_EXPLORER_URL;
 
 
 
@@ -19,6 +20,8 @@ export const WalletProvider = ({ children }) => {
   const [provider, setProvider] = useState(null);
   const [signer, setSigner] = useState(null);
   const [contract, setContract] = useState(null);
+  const crowdfundingFunctions = useCrowdFunding();
+
 
   useEffect(() => {
     if (window.ethereum) {
@@ -52,8 +55,8 @@ export const WalletProvider = ({ children }) => {
 
   const handleChainChanged = async (chainId) => {
     // Reload the page if the chain is not Sepolia Optimism
-    if (chainId !== SEPOLIA_OPTIMISM_CHAIN_ID) {
-      await switchToSepoliaOptimism();
+    if (chainId !== SEPOLIA_LISK_CHAIN_ID) {
+      await switchToSepoliaLisk();
     } else {
       window.location.reload();
     }
@@ -62,7 +65,7 @@ export const WalletProvider = ({ children }) => {
   const connectWalletHandler = async () => {
     if (window.ethereum && window.ethereum.isMetaMask) {
       try {
-        await switchToSepoliaOptimism();
+        await switchToSepoliaLisk();
         const accounts = await window.ethereum.request({
           method: "eth_requestAccounts",
         });
@@ -74,15 +77,15 @@ export const WalletProvider = ({ children }) => {
       setErrorMessage("Please install MetaMask browser extension to interact");
     }
   };
-  const switchToSepoliaOptimism = async () => {
+  const switchToSepoliaLisk = async () => {
     try {
       await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: SEPOLIA_OPTIMISM_CHAIN_ID }],
+        params: [{ chainId: SEPOLIA_LISK_CHAIN_ID }],
       });
   
       // After switching, reinitialize provider and contract
-      const provider = new ethers.providers.JsonRpcProvider(SEPOLIA_OPTIMISM_RPC_URL);
+      const provider = new ethers.providers.JsonRpcProvider(SEPOLIA_LISK_RPC_URL);
       setProvider(provider);
   
       const signer = provider.getSigner();
@@ -97,21 +100,21 @@ export const WalletProvider = ({ children }) => {
             method: 'wallet_addEthereumChain',
             params: [
               {
-                chainId: SEPOLIA_OPTIMISM_CHAIN_ID,
-                chainName: 'Optimism Sepolia',
+                chainId: SEPOLIA_LISK_CHAIN_ID,
+                chainName: 'Lisk Sepolia',
                 nativeCurrency: {
                   name: 'Sepolia Ether',
                   symbol: 'ETH',
                   decimals: 18,
                 },
-                rpcUrls: [SEPOLIA_OPTIMISM_RPC_URL],
+                rpcUrls: [SEPOLIA_LISK_RPC_URL],
                 blockExplorerUrls: [BLOCK_EXPLORER_URL],
               },
             ],
           });
   
           // Reinitialize provider and contract after adding the network
-          const provider = new ethers.providers.JsonRpcProvider(SEPOLIA_OPTIMISM_RPC_URL);
+          const provider = new ethers.providers.JsonRpcProvider(SEPOLIA_LISK_RPC_URL);
           setProvider(provider);
   
           const signer = provider.getSigner();
@@ -174,11 +177,12 @@ export const WalletProvider = ({ children }) => {
         connButtonText,
         errorMessage,
         connectWalletHandler,
-        switchToSepoliaOptimism,
+        switchToSepoliaLisk,
         userBalance,
         provider,
         signer,
         contract,
+        
       }}
     >
       {children}
